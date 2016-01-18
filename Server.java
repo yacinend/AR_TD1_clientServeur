@@ -1,13 +1,12 @@
 package jus.aor.printing;
 
-import java.io.IOException;
+import java.io.IOException; 
 import java.io.OutputStream;
 import java.lang.Thread.State;
 import java.net.*;
 import java.util.*;
 import java.util.logging.Logger;
 
-//import jus.aor.printing.Esclave.Slave;
 import jus.util.Formule;
 
 import static jus.aor.printing.Notification.*;
@@ -53,7 +52,6 @@ public class Server {
 				log.log(Level.INFO_1,"un client est connecté");
 				final Socket socket=soc;
 				new Thread(new Runnable(){
-
 					@Override
 					public void run() {
 						// TODO Auto-generated method stub

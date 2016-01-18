@@ -26,18 +26,9 @@ class TCP{
 	 */
 	static void writeProtocole(Socket soc,  Notification not) throws IOException {
 		OutputStream outToServer = soc.getOutputStream();
-		DataOutputStream out = new DataOutputStream(outToServer);
+		ObjectOutputStream out = new ObjectOutputStream(outToServer);
         System.out.println("Envoie en cours");
-        switch(not){
-        case QUERY_PRINT:
-        	out.writeInt(1);
-        	System.out.println("envoyer");
-        	break;
-        case REPLY_PRINT_OK:
-        	out.writeInt(2);
-     	   break;
-        }
-		
+		out.writeObject(not); 
 		
 	}
 	/**
@@ -48,18 +39,14 @@ class TCP{
 	 */
 	static Notification readProtocole(Socket soc) throws IOException {
 		InputStream inFromServer = soc.getInputStream();
-        DataInputStream in =new DataInputStream(inFromServer);
+        ObjectInputStream in =new ObjectInputStream(inFromServer);
        Notification not = null;
-      
-       int temp=in.readInt();
-       switch(temp){
-       case 1:
-    	   not=not.QUERY_PRINT;
-    	   break;
-       case 2:
-    	   not=not.REPLY_PRINT_OK;
-    	   break;
-       }
+       try {
+		not=(Notification) in.readObject();
+	} catch (ClassNotFoundException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	}
         return not;
 	}
 	/**
@@ -88,7 +75,15 @@ class TCP{
         DataInputStream in =new DataInputStream(inFromServer);
         int length=in.readInt();
         byte[] temp = new byte[length];
-        in.read(temp,0,length);
+        
+        int nread=0;
+        int num=0;
+        while(nread<length){
+        	num=in.read(temp,nread,length-nread);
+        	nread=temp.length;
+        	if(num== -1) return new JobKey(temp);
+        }
+        
         return new JobKey(temp);
 	}
 	/**
